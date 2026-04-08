@@ -136,7 +136,7 @@ transform:scale(1.2);
 <h2>Marina Stereo 101.9 FM</h2>
 
 <div class="location">
-Malagana - Bolívar
+Malagana - Bolívar, Colombia
 </div>
 
 <div class="song" id="songTitle">
@@ -144,7 +144,7 @@ Malagana - Bolívar
 </div>
 
 <audio id="radio">
-<source src="http://190.60.35.218:8030/radio.mp3" type="audio/mpeg">
+<source src="https://marina-malagana.wisemaradio.com/listen/marina-malagana/radio.mp3" type="audio/mpeg">
 </audio>
 
 <button class="play" onclick="togglePlay()" id="playBtn">
@@ -169,11 +169,11 @@ Malagana - Bolívar
 <img src="Whatsapp.png">
 </a>
 
-<a href="https://www.instagram.com/marinastereo_arc/" target="_blank">
+<a href="https://www.instagram.com/" target="_blank">
 <img src="instagram.png">
 </a>
 
-<a href="https://www.facebook.com/share/185JMgMCwJ/" target="_blank">
+<a href="https://www.facebook.com/" target="_blank">
 <img src="facebook.png">
 </a>
 
@@ -195,6 +195,7 @@ if(audio.paused){
 audio.play();
 btn.innerHTML="⏸ Pausar";
 
+/* MEDIA SESSION */
 if ('mediaSession' in navigator) {
 navigator.mediaSession.metadata = new MediaMetadata({
 title: 'Marina Stereo 101.9 FM',
@@ -215,39 +216,22 @@ btn.innerHTML="▶ Escuchar en vivo";
 
 }
 
-/* METADATA */
+/* METADATOS */
 
 async function actualizarMetadata(){
 
 try{
 
-let res = await fetch("http://190.60.35.218/api/nowplaying/marina-malagana?nocache=" + new Date().getTime());
+let res = await fetch("https://marina-malagana.wisemaradio.com/api/nowplaying/marina-malagana");
 let data = await res.json();
 
 let texto = data.now_playing.song.text;
 
-if(
-texto &&
-texto.trim() !== "" &&
-texto !== " - " &&
-!texto.toLowerCase().includes("http") &&
-texto.length > 5
-){
+if(texto && texto.trim() !== "" && texto.length > 5){
 
-texto = texto.replace('.mp3','').replace('.MP3','').trim();
+texto = texto.replace('.mp3','').trim();
 
 document.getElementById("songTitle").innerHTML = "🎶 " + texto;
-
-if ('mediaSession' in navigator) {
-navigator.mediaSession.metadata = new MediaMetadata({
-title: texto,
-artist: 'En vivo',
-album: 'Marina Stereo Malagana',
-artwork: [
-{ src: 'logonota.png', sizes: '512x512', type: 'image/png' }
-]
-});
-}
 
 }else{
 
@@ -274,13 +258,13 @@ if(navigator.share){
 
 navigator.share({
 title:"Marina Stereo 101.9 FM",
-text:"Escucha Marina Stereo 101.9 FM en vivo",
-url:"https://www.wisemaradio.com/marinamalagana"
+text:"Escucha Marina Stereo Malagana en vivo",
+url:"https://marinamalaganaplay.wisemaradio.com"
 });
 
 }else{
 
-alert("Comparte este enlace: https://www.wisemaradio.com/marinamalagana");
+alert("Escúchala aquí: https://marinamalaganaplay.wisemaradio.com");
 
 }
 
