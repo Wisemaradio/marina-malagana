@@ -144,7 +144,7 @@ Malagana - Bolívar
 </div>
 
 <audio id="radio">
-<source src="http://190.60.35.218:8030/radio.mp3" type="audio/mpeg">
+<source src="http://190.60.35.218/listen/marina-malagana/radio.mp3" type="audio/mpeg">
 </audio>
 
 <button class="play" onclick="togglePlay()" id="playBtn">
@@ -215,21 +215,39 @@ btn.innerHTML="▶ Escuchar en vivo";
 
 }
 
-/* METADATA (AJUSTADO AL SERVER DIRECTO) */
+/* METADATA CORREGIDO */
 
 async function actualizarMetadata(){
 
 try{
 
-let res = await fetch("http://190.60.35.218:8030/status-json.xsl");
+let res = await fetch("http://190.60.35.218/api/nowplaying/marina-malagana?nocache=" + new Date().getTime());
 let data = await res.json();
 
-/* Icecast estructura */
-let texto = data.icestats.source.title;
+let texto = data.now_playing.song.text;
 
-if(texto && texto.length > 3){
+if(
+texto &&
+texto.trim() !== "" &&
+texto !== " - " &&
+!texto.toLowerCase().includes("http") &&
+texto.length > 5
+){
+
+texto = texto.replace('.mp3','').replace('.MP3','').trim();
 
 document.getElementById("songTitle").innerHTML = "🎶 " + texto;
+
+if ('mediaSession' in navigator) {
+navigator.mediaSession.metadata = new MediaMetadata({
+title: texto,
+artist: 'En vivo',
+album: 'Marina Stereo Malagana',
+artwork: [
+{ src: 'logonota.png', sizes: '512x512', type: 'image/png' }
+]
+});
+}
 
 }else{
 
@@ -257,12 +275,12 @@ if(navigator.share){
 navigator.share({
 title:"Marina Stereo 101.9 FM",
 text:"Escucha Marina Stereo 101.9 FM en vivo",
-url:"http://190.60.35.218:8030"
+url:"https://www.wisemaradio.com/marinamalagana"
 });
 
 }else{
 
-alert("Comparte este enlace: http://190.60.35.218:8030");
+alert("Comparte este enlace: https://www.wisemaradio.com/marinamalagana");
 
 }
 
