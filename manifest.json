@@ -1,21 +1,22 @@
 {
-"name": "Marina Stereo 101.9 FM",
-"short_name": "Marina Stereo",
-"start_url": "https://marinamalagana.github.io/marinastereo/",
-"display": "standalone",
-"background_color": "#000000",
-"theme_color": "#1db954",
-"orientation": "portrait",
-"icons": [
-{
-"src": "logo.jpg",
-"sizes": "192x192",
-"type": "image/jpeg"
-},
-{
-"src": "logo.jpg",
-"sizes": "512x512",
-"type": "image/jpeg"
-}
-]
+  "name": "Marina Stereo 101.9 FM",
+  "short_name": "Marina 101.9",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#1db954",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
 }
