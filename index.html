@@ -84,14 +84,10 @@ font-size:16px;
 color:white;
 cursor:pointer;
 margin-bottom:10px;
-}
-
-.play:hover{
-background:#17a74a;
+width:100%;
 }
 
 .share{
-margin-top:8px;
 background:#007bff;
 border:none;
 padding:10px 20px;
@@ -99,16 +95,20 @@ border-radius:25px;
 color:white;
 font-size:14px;
 cursor:pointer;
+margin-top:10px;
+width:100%;
 }
 
 .install{
-margin-top:8px;
 background:#ff9800;
 border:none;
 padding:10px 20px;
 border-radius:25px;
 color:white;
 cursor:pointer;
+margin:12px auto 0 auto;
+display:block;
+width:100%;
 }
 
 .social img{
@@ -130,7 +130,7 @@ transform:scale(1.2);
 <div class="overlay">
 
 <div class="cover">
-<img id="coverImg" src="logo.jpg">
+<img src="logo.jpg">
 </div>
 
 <h2>Marina Stereo 101.9 FM</h2>
@@ -151,13 +151,9 @@ Malagana - Bolívar, Colombia
 ▶ Escuchar en vivo
 </button>
 
-<br>
-
 <button class="share" onclick="compartirRadio()">
 📲 Compartir emisora
 </button>
-
-<br>
 
 <button class="install" id="installBtn" style="display:none;">
 📱 Instalar APP
@@ -195,18 +191,6 @@ if(audio.paused){
 audio.play();
 btn.innerHTML="⏸ Pausar";
 
-/* MEDIA SESSION */
-if ('mediaSession' in navigator) {
-navigator.mediaSession.metadata = new MediaMetadata({
-title: 'Marina Stereo 101.9 FM',
-artist: 'En vivo',
-album: 'Malagana - Bolívar',
-artwork: [
-{ src: 'logonota.png', sizes: '512x512', type: 'image/png' }
-]
-});
-}
-
 }else{
 
 audio.pause();
@@ -216,13 +200,13 @@ btn.innerHTML="▶ Escuchar en vivo";
 
 }
 
-/* METADATOS */
+/* METADATOS CORREGIDOS */
 
 async function actualizarMetadata(){
 
 try{
 
-let res = await fetch("https://marina-malagana.wisemaradio.com/api/nowplaying/marina-malagana");
+let res = await fetch("https://marina-malagana.wisemaradio.com/api/nowplaying/marina-malagana?nocache=" + new Date().getTime());
 let data = await res.json();
 
 let texto = data.now_playing.song.text;
@@ -270,7 +254,7 @@ alert("Escúchala aquí: https://marinamalaganaplay.wisemaradio.com");
 
 }
 
-/* INSTALAR APP */
+/* INSTALAR APP SEGURO */
 
 let deferredPrompt;
 
@@ -281,7 +265,9 @@ document.getElementById("installBtn").style.display="block";
 });
 
 document.getElementById("installBtn").addEventListener("click",()=>{
+if(deferredPrompt){
 deferredPrompt.prompt();
+}
 });
 
 /* SERVICE WORKER */

@@ -1,41 +1,26 @@
-const CACHE_NAME = 'marina-malagana-v2';
-
-const urlsToCache = [
-  '/index.html',
-  '/logo.jpg',
-  '/banner.jpg',
-  '/manifest.json'
-];
+const CACHE_NAME = 'marina-malagana-v3';
 
 // INSTALAR
 self.addEventListener('install', event => {
-  console.log('Service Worker instalado');
-
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-  );
-
-  self.skipWaiting(); // 🔥 fuerza actualización
+  self.skipWaiting();
 });
 
 // ACTIVAR
 self.addEventListener('activate', event => {
-  console.log('Service Worker activado');
 
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cache => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
           }
         })
-      );
-    })
+      )
+    )
   );
 
-  self.clients.claim(); // 🔥 toma control inmediato
+  self.clients.claim();
 });
 
 // FETCH
@@ -43,19 +28,19 @@ self.addEventListener('fetch', event => {
 
   const url = event.request.url;
 
-  // ❌ NO cachear streaming ni API
+  // ❌ NO tocar streaming ni metadata (CLAVE)
   if (
     url.includes('/listen/') ||
     url.includes('/api/') ||
-    url.includes('.mp3')
+    url.includes('.mp3') ||
+    url.includes('nowplaying')
   ) {
     return;
   }
 
+  // Solo fallback básico
   event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        return response || fetch(event.request);
-      })
+    fetch(event.request).catch(() => caches.match(event.request))
   );
+
 });
