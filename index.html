@@ -155,7 +155,7 @@ Malagana - Bolívar, Colombia
 📲 Compartir emisora
 </button>
 
-<button class="install" id="installBtn" style="display:none;">
+<button class="install" id="installBtn">
 📱 Instalar APP
 </button>
 
@@ -179,28 +179,35 @@ Malagana - Bolívar, Colombia
 
 <script>
 
-/* PLAYER */
-
 var audio=document.getElementById("radio");
 var btn=document.getElementById("playBtn");
 
 function togglePlay(){
 
 if(audio.paused){
-
 audio.play();
 btn.innerHTML="⏸ Pausar";
-
 }else{
-
 audio.pause();
 btn.innerHTML="▶ Escuchar en vivo";
-
 }
 
 }
 
-/* METADATOS CORREGIDOS */
+/* 🔥 LOGO EN BLOQUEO (IGUAL QUE CARBOL) */
+if ('mediaSession' in navigator) {
+navigator.mediaSession.metadata = new MediaMetadata({
+title: "Marina Stereo 101.9 FM",
+artist: "En vivo",
+album: "Malagana - Bolívar",
+artwork: [
+{ src: 'logo-192.png', sizes: '192x192', type: 'image/png' },
+{ src: 'logo-512.png', sizes: '512x512', type: 'image/png' }
+]
+});
+}
+
+/* METADATOS (MISMA LÓGICA CARBOL) */
 
 async function actualizarMetadata(){
 
@@ -211,7 +218,7 @@ let data = await res.json();
 
 let texto = data.now_playing.song.text;
 
-if(texto && texto.trim() !== "" && texto.length > 5){
+if(texto && texto.length > 5){
 
 texto = texto.replace('.mp3','').trim();
 
@@ -238,39 +245,38 @@ actualizarMetadata();
 
 function compartirRadio(){
 
-if(navigator.share){
-
 navigator.share({
 title:"Marina Stereo 101.9 FM",
 text:"Escucha Marina Stereo Malagana en vivo",
 url:"https://marinamalaganaplay.wisemaradio.com"
 });
 
-}else{
-
-alert("Escúchala aquí: https://marinamalaganaplay.wisemaradio.com");
-
 }
 
-}
-
-/* INSTALAR APP SEGURO */
+/* 🔥 INSTALACIÓN (MISMO COMPORTAMIENTO) */
 
 let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+/* 🔴 OCULTAR SOLO EN APP */
+if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+  installBtn.style.display = "none";
+}
 
 window.addEventListener('beforeinstallprompt',(e)=>{
 e.preventDefault();
-deferredPrompt=e;
-document.getElementById("installBtn").style.display="block";
+deferredPrompt = e;
 });
 
-document.getElementById("installBtn").addEventListener("click",()=>{
+installBtn.addEventListener("click",()=>{
 if(deferredPrompt){
 deferredPrompt.prompt();
+}else{
+alert("Para instalar usa el menú del navegador");
 }
 });
 
-/* SERVICE WORKER */
+/* SW */
 
 if('serviceWorker' in navigator){
 navigator.serviceWorker.register('sw.js');
